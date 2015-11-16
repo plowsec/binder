@@ -1,0 +1,2 @@
+#define IDR_PAYLOAD 101
+#define IDR_TARGET 102

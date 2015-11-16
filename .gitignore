@@ -1,0 +1,5 @@
+*.exe
+*.ico
+*.o
+payload.txt
+target.txt
