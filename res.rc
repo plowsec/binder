@@ -1,5 +1,0 @@
-#include <winnt.h>
-#include "resource.h"
-IDR_PAYLOAD RCDATA "payload.txt"
-IDR_TARGET RCDATA "target.txt"
-MAIN_ICON ICON "VLC_ICON.ico"
