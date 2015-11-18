@@ -1,5 +1,8 @@
 *.exe
 *.ico
 *.o
+*.rc
+*.bak
+*.swp
 payload.txt
 target.txt
