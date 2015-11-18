@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "windows.h"
-#include "resource.h"
-#include "shlobj.h"
-#include "shlwapi.h"
+#include "includes/windows.h"
+#include "includes/resource.h"
+#include "includes/shlobj.h"
+#include "includes/shlwapi.h"
 
 /*
 IMPORTANT : PAS OUBLIER DE LINKER shlwapi.lib (-lshlwapi)
