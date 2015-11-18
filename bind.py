@@ -41,6 +41,11 @@ class Main:
 
         self.output = self.OUTPUT_DIR + "/" + options.output
 
+        #create output directory if necessary
+        if not os.path.exists(self.OUTPUT_DIR):
+            os.makedirs(self.OUTPUT_DIR)
+
+
         if options.icon == "":
             self.noicon = True
 
@@ -67,10 +72,6 @@ class Main:
                 print("[!] Exiting....")
                 return
         
-        #create output directory if necessary
-        if not os.path.exists(self.OUTPUT_DIR):
-            os.makedirs(self.OUTPUT_DIR)
-
         #let's compile everything
         self.make()
 
