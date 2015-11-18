@@ -2,14 +2,14 @@
 
 ### What is this repository for? ###
 
-* A binder is a program that merges two binaries together. This a way to "infect" binaries, as one can hide a malicious executable inside a "legit" one.
+* A binder is a program that merges two binaries together. It's a way to "infect" binaries, as one can hide a malicious executable inside a "legit" one (overly used in the wild, so this is educational purpose only. Obviously.)
 * Can also be used as a way to keep a "foothold" on a system after a successfull hack
 * This repository contains the actual code of the binder, but also a user-friendly wrapper around the binder, so one can binds two binaries without the previous required steps. Which were :
-- Rename target binary to "target.txt"
-- Rename payload binary to "payload.txt"
-- Rename icon to "target_icon.ico"
-- Compile binder.c
-- Remove temp files
+ Rename target binary to "target.txt"
+ Rename payload binary to "payload.txt"
+ Rename icon to "target_icon.ico"
+ Compile binder.c
+ Remove temp files
 
 * A significative + side of using this wrapper : cross-compilation from a Linux system (ArchLinux)
 
