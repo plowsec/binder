@@ -37,4 +37,4 @@
 ### Contribution guidelines ###
 
 * Code review
-* Harsch critics (Ask yourself : what insults would Linus Torvalds syell to the guy who made this "utter crap" (me))
+* Harsch critics (Ask yourself : what insults would Linus Torvalds yell to the guy who made this "utter crap" (me))
