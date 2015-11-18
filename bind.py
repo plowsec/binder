@@ -67,6 +67,10 @@ class Main:
                 print("[!] Exiting....")
                 return
         
+        #create output directory if necessary
+        if not os.path.exists(self.OUTPUT_DIR):
+            os.makedirs(self.OUTPUT_DIR)
+
         #let's compile everything
         self.make()
 
