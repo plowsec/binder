@@ -2,13 +2,26 @@
 
 ### What is this repository for? ###
 
-* A dropper is a program (malware component) that has been designed to "install" some sort of malware (virus, backdoor, etc.) to a target system. The malware code can be contained within the dropper (single-stage) in such a way as to avoid detection by virus scanners or the dropper may download the malware to the target machine once activated (two stage).
-* This project is a possible implementation in artistic C++ of a two-staged dropper
+* A binder is a program that merges two binaries together. It's a way to "infect" binaries, as one can hide a malicious executable inside a "legit" one (overly used in the wild, so this is educational purpose only. Obviously.)
+* Can also be used as a way to keep a "foothold" on a system after a successfull hack
+* This repository contains the actual code of the binder, but also a user-friendly wrapper around the binder, so one can binds two binaries without the previous required steps. Which were :
+ Rename target binary to "target.txt"
+ Rename payload binary to "payload.txt"
+ Rename icon to "target_icon.ico"
+ Compile binder.c
+ Remove temp files
+
+* A significative + side of using this wrapper : cross-compilation from a Linux system (ArchLinux)
+
+###Important###
+* The script bind.py was made with cross-compilation from Archlinux to Windows in mind. May need some minor tweaking for other systems (I am not sorry)
+
+### Dependencies ###
+* mingw-w64-gcc (Archlinux)
+* required includes to compile binder.c are in src/includes (you can trust theses headers, I am a nice guy, as well as the guys that made these headers available to me (probably) (Qt))
 
 ###Goals###
 
-* As fast as possible
-* As light as possible (final build should be packed)
 * Inconspicuous (complete clean up once the execution has completed)
 * AV Evasion
 * Easily configurable
@@ -17,10 +30,11 @@
 
 ### How do I get set up? ###
 
-* Set your Command and Control config in Constants.h
-
+* sudo pacman -S mingw-w64-gcc
+* Download bind.py and src folder
+* Positive thinking
 
 ### Contribution guidelines ###
 
 * Code review
-* Other guidelines
+* Harsch critics (Ask yourself : what insults would Linus Torvalds syell to the guy who made this "utter crap" (me))
